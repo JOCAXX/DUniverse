@@ -1,1 +1,40 @@
 Decreasing Universe
+DOIS ARTIGOS: 
+
+------------- PRIMEIRO ARTIGO  ----------------
+
+The Age of Galaxies as a Determining Factor for Redshift:
+An Analysis from the Perspective of the Decreasing Universe Theory
+
+"The Decreasing Universe (D.U.) theory proposes that the gravitational field induces a continuous contraction of space, offering an alternative explanation for cosmological redshift. 
+
+A crucial and logical deduction from this theory is that a galaxy's time of exposure to the gravitational field, i.e., its age, should directly influence the observed redshift. 
+
+Older galaxies,having accumulated more time under spatial contraction, should exhibit a smaller redshift.
+
+This article examines this prediction, using the observed redshift difference between old (elliptical) and young (spiral) galaxies in clusters as a primary observational test for the D.U. theory."
+
+https://jocaxx.github.io/DUniverse/Novos/DU_AGE.pdf
+
+----------------------- SEGUNDO ARTIGO ------------------
+
+Analysis of Mass-Redshift Correlation in Velocity Matched Subgroups: A Rigorous Test for the Decreasing Universe Theory
+
+The Decreasing Universe (D.U.) theory proposes that the gravitational field induces a continuous spatial contraction, predicting that more massive galaxies should exhibit a smaller
+redshift at the same distance. 
+
+The main obstacle to testing this prediction is the noise introduced by the galaxies' peculiar velocities. This study applies a rigorous methodology to isolate the effect of mass by analyzing the correlation between stellar mass and redshift in galaxy subgroups with controlled distance, age, and radial velocity. 
+
+The results show that, by minimizing dynamical noise, the negative correlation predicted by the D.U. theory emerges in specific subsamples, suggesting that the intrinsic gravitational effect may be detectable.
+
+https://jocaxx.github.io/DUniverse/Novos/DU_MASS.pdf
+
+-------------------------------------
+
+Decreasinng Universe articles:
+
+https://jocaxx.github.io/DUniverse/Articles.pdf
+
+
+
+
