@@ -1,56 +1,54 @@
-<!DOCTYPE html>
+<!DOCTYPE html>   
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Arquivos PDF (V2.1)</title>
+  <title>Arquivos PDF</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; }
+    h1 { font-size: 24px; }
     ul { line-height: 1.8; }
   </style>
 </head>
 <body>
 
 <h1>Arquivos PDF</h1>
-<ul id="pdf-list">Carregando...</ul>
+<ul id="pdf-list">Carregando PDFs...</ul>
 
 <script>
-  const usuario = "JOCAXX";
-  const repositorio = "DUniverse";
-  const pasta = "Novos";
+  // ===== CONFIGURE AQUI =====
+  const usuario = "JOCAXX";        // seu usuário GitHub
+  const repositorio = "DUniverse";        // nome do repositório
+  const pasta = "Novos";    // pasta onde estão os PDFs
+  // ==========================
 
   const apiURL = `https://api.github.com/repos/${usuario}/${repositorio}/contents/${pasta}`;
-  const pagesBase = `https://${usuario}.github.io/${repositorio}/${pasta}/`;
 
   fetch(apiURL)
-    .then(r => r.json())
+    .then(response => response.json())
     .then(files => {
       const list = document.getElementById("pdf-list");
       list.innerHTML = "";
 
       files
-        .filter(f => f.name.toLowerCase().endsWith(".pdf"))
-        .forEach(f => {
+        .filter(file => file.name.toLowerCase().endsWith(".pdf"))
+        .forEach(file => {
           const li = document.createElement("li");
           const a = document.createElement("a");
-
-          // ?? AQUI ESTÁ A DIFERENÇA CRÍTICA
-          a.href = pagesBase + encodeURIComponent(f.name);
-
-          a.textContent = f.name;
+          a.href = file.download_url;
+          a.textContent = file.name;
           a.target = "_blank";
-          a.rel = "noopener noreferrer";
-
           li.appendChild(a);
           list.appendChild(li);
         });
 
       if (!list.hasChildNodes()) {
-        list.innerHTML = "<li>Nenhum PDF encontrado</li>";
+        list.innerHTML = "<li>Nenhum PDF encontrado.</li>";
       }
     })
-    .catch(() => {
+    .catch(err => {
       document.getElementById("pdf-list").innerHTML =
-        "<li>Erro ao carregar PDFs</li>";
+        "<li>Erro ao carregar arquivos.</li>";
+      console.error(err);
     });
 </script>
 
