@@ -383,6 +383,14 @@ const ITEMS = [{"path": "Articles.pdf", "folder": "", "folder_label": "Main Arti
 
 const FOLDER_ORDER = ["Todos", "Novos", "Shorts", "Abstract", "Entrevistas"];
 
+// Normalize text for accent-insensitive search:
+// lowercase + remove diacritics (ç→c, ã→a, é→e…) + collapse whitespace
+function normText(s){
+  return s.toLowerCase()
+          .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+          .replace(/\s+/g, ' ');
+}
+
 // Full-text search index: { "path/to.pdf": "lowercased extracted text" }
 // Loaded asynchronously so the page works instantly even before it's ready.
 let CONTENT_INDEX = null;
@@ -391,7 +399,7 @@ fetch('search-index.json')
   .then(r => { if(!r.ok) throw new Error('index not found'); return r.json(); })
   .then(data => {
     CONTENT_INDEX = {};
-    for(const k in data) CONTENT_INDEX[k] = data[k].toLowerCase();
+    for(const k in data) CONTENT_INDEX[k] = normText(data[k]);
     CONTENT_INDEX_LOADING = false;
     render();
   })
@@ -446,14 +454,14 @@ function activeFolder(){
 }
 
 function render(){
-  const q = document.getElementById('search').value.trim().toLowerCase();
+  const q = normText(document.getElementById('search').value.trim());
   const folder = activeFolder();
 
   let filtered = ITEMS.filter(it => {
     const matchesFolder = folder === '__all__' || it.folder === folder;
     if(!matchesFolder) return false;
     if(!q) return true;
-    const titleHit = it.title.toLowerCase().includes(q) || it.path.toLowerCase().includes(q);
+    const titleHit = normText(it.title).includes(q) || normText(it.path).includes(q);
     const contentHit = !!(CONTENT_INDEX && CONTENT_INDEX[it.path] && CONTENT_INDEX[it.path].includes(q));
     it._contentOnlyMatch = !titleHit && contentHit; // used by renderGrid for the badge
     return titleHit || contentHit;
