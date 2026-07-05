@@ -378,7 +378,7 @@
   </div>
 </div>
 
-<div id="version-badge" title="Site version">v1.4</div>
+<div id="version-badge" title="Site version">v1.3</div>
 
 <main>
   <div id="results"></div>
@@ -386,7 +386,7 @@
 </main>
 
 <footer>
-  <p>DUniverse — Jocax's independent research archive · <a href="https://jocaxx.github.io/DUniverse/" target="_blank" rel="noopener">jocaxx.github.io/DUniverse</a> · v1.4</p>
+  <p>DUniverse — Jocax's independent research archive · <a href="https://jocaxx.github.io/DUniverse/" target="_blank" rel="noopener">jocaxx.github.io/DUniverse</a> · v1.3</p>
 </footer>
 
 <script>
@@ -501,16 +501,6 @@ function render(){
   }
 
   // grouped by folder when showing "all"
-  // Root-level files (folder === "") are not in FOLDER_ORDER, so render them first
-  const rootGroup = filtered.filter(it => it.folder === "");
-  if(rootGroup.length > 0){
-    const label = document.createElement('div');
-    label.className = 'section-label';
-    label.innerHTML = `${escapeHtml(rootGroup[0].folder_label)} <span class="count">${rootGroup.length}</span>`;
-    resultsEl.appendChild(label);
-    resultsEl.appendChild(renderGrid(rootGroup));
-  }
-
   FOLDER_ORDER.forEach(f => {
     const group = filtered.filter(it => it.folder === f);
     if(group.length === 0) return;
