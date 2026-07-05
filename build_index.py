@@ -13,7 +13,7 @@ USAGE (from the repository root, where Articles.pdf lives):
     python build_index.py              -> incremental: only new/changed PDFs are extracted
     python build_index.py --force      -> re-extract everything from scratch
 
-Then commit & push:  site/search-index.json  and  site/index.html
+Then commit & push:  site/search-index.json, site/items.json and site/index.html
 """
 
 import json
@@ -35,6 +35,7 @@ REPO_ROOT = Path(__file__).resolve().parent
 SITE_DIR = REPO_ROOT / "site"
 INDEX_JSON = SITE_DIR / "search-index.json"
 INDEX_HTML = SITE_DIR / "index.html"
+ITEMS_JSON = SITE_DIR / "items.json"
 
 # folder -> label shown on the site ("" = repository root)
 FOLDERS = {
@@ -166,6 +167,12 @@ def main():
         encoding="utf-8",
     )
 
+    # ---- write items.json (used by search.html)
+    ITEMS_JSON.write_text(
+        json.dumps(new_items, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
     # ---- rewrite ITEMS inside index.html
     items_js = json.dumps(new_items, ensure_ascii=False)
     html = html[:m.start(1)] + items_js + html[m.end(1):]
@@ -188,7 +195,7 @@ def main():
             print(f"    ! {p}")
     print(f"Reused from old index ..... {len(kept)}")
     print("=" * 60)
-    print("Updated: site/search-index.json  and  site/index.html")
+    print("Updated: site/search-index.json, site/items.json and site/index.html")
     print("Now commit & push these two files.")
 
 

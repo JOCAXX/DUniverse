@@ -16,6 +16,21 @@ O que ele faz: varre as pastas (raiz, Todos, Novos, Shorts, Abstract, Entrevista
 Se algum dia quiser re-extrair tudo do zero (ex.: substituiu o conteúdo de um PDF mantendo o mesmo nome), use python build_index.py --force — ou apague só a entrada daquele arquivo no JSON.
 Sobre o "botão escondido": não daria para fazer no próprio site, porque o GitHub Pages é estático — o navegador não consegue extrair texto de 87 PDFs e gravar arquivos no repositório. O script local é o caminho certo. Uma evolução possível, se quiser automatizar de vez: um GitHub Action que roda esse script sozinho a cada push, aí você só arrastaria o PDF novo e commitaria, sem rodar nada. Posso montar esse workflow depois se tiver interesse.
 
+--------------------
+Para publicar: coloque search.html e items.json na pasta site/, 
+substitua o index.html (renomeando o index_fixed.html), 
+e substitua o build_index.py na raiz. 
+Depois do deploy, confira o badge "v1.6" e teste clicando no botão.
+--------------------
+Então basta copiar os arquivos para as pastas certas e fazer commit/push:
+
+site/index.html (o index_fixed.html renomeado)
+site/search.html
+site/items.json
+build_index.py na raiz (só substituindo o antigo)
+
+O novo build_index.py só será necessário na próxima vez que você adicionar ou remover PDFs — aí ele atualiza os três arquivos (search-index.json, items.json e o ITEMS do index.html) de uma vez. Se quiser rodar agora por segurança, não tem problema nenhum: ele vai reaproveitar o índice existente e regravar tudo igual em poucos segundos.
+
 
 
 
