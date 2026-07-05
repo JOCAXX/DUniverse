@@ -157,33 +157,12 @@
   .hero-meta{
     position:relative; z-index:2;
     display:flex; gap:2.2rem; flex-wrap:wrap; justify-content:center;
-    margin-top: 2rem;
+    margin-top: 2.6rem;
     font-family:'JetBrains Mono', monospace;
     font-size: 0.78rem;
     color: var(--text-muted);
   }
   .hero-meta b{ color: var(--text); font-weight:500; display:block; font-size:1.3rem; font-family:'Spectral', serif; }
-
-  /* search bar inside the hero (visible without scrolling) */
-  .hero-search{
-    position:relative; z-index:2;
-    margin-top: 2.2rem;
-    width: min(560px, 92%);
-    display:flex; align-items:center; gap:0.7rem;
-    text-align:left;
-  }
-  .hero-search .search-label{
-    font-family:'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--amber);
-    flex-shrink:0;
-  }
-  .hero-search .search-box{ flex:1; }
-  @media (max-width: 560px){
-    .hero-search{ flex-direction:column; align-items:stretch; gap:0.4rem; }
-  }
 
   /* ---------- controls ---------- */
   .controls{
@@ -386,23 +365,20 @@
   <a class="featured-cta" href="../Articles.pdf" target="_blank" rel="noopener">
     <span class="featured-dot"></span> Read the main article — Articles.pdf
   </a>
-  <div class="hero-search">
-    <span class="search-label">Search:</span>
-    <div class="search-box">
-      <input type="text" id="search" placeholder="Search by title, keyword, or PDF content…" autocomplete="off">
-      <div id="search-status" class="search-status"></div>
-    </div>
-  </div>
   <div class="hero-meta" id="hero-meta"></div>
 </header>
 
 <div class="controls">
   <div class="controls-inner">
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Search by title, keyword, or PDF content…" autocomplete="off">    
+      <div id="search-status" class="search-status"></div>
+    </div>
     <div class="tabs" id="tabs"></div>
   </div>
 </div>
 
-<div id="version-badge" title="Site version">v1.5</div>
+<div id="version-badge" title="Site version">v1.4</div>
 
 <main>
   <div id="results"></div>
@@ -410,7 +386,7 @@
 </main>
 
 <footer>
-  <p>DUniverse — Jocax's independent research archive · <a href="https://jocaxx.github.io/DUniverse/" target="_blank" rel="noopener">jocaxx.github.io/DUniverse</a> · v1.5</p>
+  <p>DUniverse — Jocax's independent research archive · <a href="https://jocaxx.github.io/DUniverse/" target="_blank" rel="noopener">jocaxx.github.io/DUniverse</a> · v1.4</p>
 </footer>
 
 <script>
