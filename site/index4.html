@@ -2,14 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-V5ZEWXG061"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-V5ZEWXG061');
-</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DUniverse — Jocaxian Archive</title>
 <meta name="description" content="Artigos, resumos e textos sobre a Teoria do Universo Decrescente (Decreasing Universe Theory) de Jocax.">
@@ -209,16 +201,6 @@
   @media (max-width: 560px){
     .hero-search{ flex-direction:column; align-items:stretch; gap:0.4rem; }
   }
-
-  .visit-counter{
-    position:relative; z-index:2;
-    margin-top: 1.1rem;
-    font-family:'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.06em;
-    color: var(--text-muted);
-  }
-  .visit-counter #visit-count{ color: var(--amber); font-weight:500; }
 
   /* ---------- controls ---------- */
   .controls{
@@ -430,9 +412,6 @@
     <a id="open-search-page" class="search-open-btn" href="search.html" target="_blank" rel="noopener" title="Open keyword search in a new tab">Search page ↗</a>
   </div>
   <div class="hero-meta" id="hero-meta"></div>
-  <div class="visit-counter" id="visit-counter" style="display:none;">
-    <span id="visit-count">–</span> visits
-  </div>
 </header>
 
 <div class="controls">
@@ -441,7 +420,7 @@
   </div>
 </div>
 
-<div id="version-badge" title="Site version">v1.8</div>
+<div id="version-badge" title="Site version">v1.6</div>
 
 <main>
   <div id="results"></div>
@@ -449,7 +428,7 @@
 </main>
 
 <footer>
-  <p>DUniverse — Jocax's independent research archive · <a href="https://jocaxx.github.io/DUniverse/" target="_blank" rel="noopener">jocaxx.github.io/DUniverse</a> · v1.8</p>
+  <p>DUniverse — Jocax's independent research archive · <a href="https://jocaxx.github.io/DUniverse/" target="_blank" rel="noopener">jocaxx.github.io/DUniverse</a> · v1.6</p>
 </footer>
 
 <script>
@@ -632,26 +611,6 @@ document.getElementById('search').addEventListener('input', render);
   }
   input.addEventListener('input', sync);
   sync();
-})();
-
-// ---- Visit counter (CounterAPI, free service) ----
-// Increments only once per browser session; on later loads it just reads
-// the current value. If the service is unreachable, the counter stays hidden.
-(function(){
-  const NS = 'jocaxx-duniverse';       // public namespace
-  const KEY = 'site-index';            // counter name
-  const already = sessionStorage.getItem('du_counted');
-  const url = 'https://api.counterapi.dev/v1/' + NS + '/' + KEY + (already ? '' : '/up');
-  fetch(url)
-    .then(r => { if(!r.ok) throw 0; return r.json(); })
-    .then(d => {
-      const n = d && (d.count ?? d.value);
-      if(typeof n !== 'number') throw 0;
-      sessionStorage.setItem('du_counted', '1');
-      document.getElementById('visit-count').textContent = n.toLocaleString('en-US');
-      document.getElementById('visit-counter').style.display = 'block';
-    })
-    .catch(() => { /* service unavailable: keep the counter hidden */ });
 })();
 
 buildTabs();

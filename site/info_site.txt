@@ -1,3 +1,12 @@
+Três arquivos atualizados:
+root_index.html ? renomeie para index.html e substitua o da raiz do repositório. Em vez do iframe de 600px, ele redireciona instantaneamente para site/ — quem acessar https://jocaxx.github.io/DUniverse/ cai direto no site completo, em tela cheia, com a URL certa na barra (o que também faz o botão "Search page ?" e os links dos PDFs funcionarem sem as limitações do iframe).
+index_fixed.html (v1.7) ? substitua o site/index.html. Única mudança: o código do Google Analytics que estava na página antiga da raiz agora está aqui, então suas estatísticas de visita continuam funcionando — e melhor que antes, porque no esquema do iframe o GA só contava a "moldura", não a navegação real.
+search.html ? substitua o site/search.html. Também ganhou o GA, então cada busca em nova aba conta como pageview (dá até para ver no Analytics quais palavras as pessoas pesquisam, pelo parâmetro ?q= nas URLs).
+Depois do push, teste acessando https://jocaxx.github.io/DUniverse/ — deve pular para .../DUniverse/site/ sozinho, com o badge mostrando v1.7. Links antigos que apontavam para a raiz continuam funcionando, porque o redirecionamento os leva ao lugar certo.
+
+
+
+======================================
 1. index_fixed.html (v1.5) — as duas mudanças de UI:
 
 A barra de busca agora fica dentro do hero, logo abaixo do botão "Read the main article" e acima dos contadores de documentos — visível sem rolar a tela.
