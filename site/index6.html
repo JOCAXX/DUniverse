@@ -441,7 +441,7 @@
   </div>
 </div>
 
-<div id="version-badge" title="Site version">v1.9</div>
+<div id="version-badge" title="Site version">v1.8</div>
 
 <main>
   <div id="results"></div>
@@ -449,7 +449,7 @@
 </main>
 
 <footer>
-  <p>DUniverse — Jocax's independent research archive · <a href="https://jocaxx.github.io/DUniverse/" target="_blank" rel="noopener">jocaxx.github.io/DUniverse</a> · v1.9</p>
+  <p>DUniverse — Jocax's independent research archive · <a href="https://jocaxx.github.io/DUniverse/" target="_blank" rel="noopener">jocaxx.github.io/DUniverse</a> · v1.8</p>
 </footer>
 
 <script>
@@ -527,38 +527,18 @@ function activeFolder(){
   return active ? active.dataset.folder : '__all__';
 }
 
-// Split a query into search terms:
-//  - each whitespace-separated word is one term (combined with AND)
-//  - words inside "double quotes" form a single exact-phrase term
-function parseTerms(raw){
-  const s = normText(raw.trim());
-  const out = [];
-  const rx = /"([^"]+)"|(\S+)/g;
-  let m;
-  while((m = rx.exec(s))) out.push(m[1] || m[2]);
-  return out.filter(Boolean);
-}
-
 function render(){
-  const terms = parseTerms(document.getElementById('search').value);
-  const q = terms.length > 0;
+  const q = normText(document.getElementById('search').value.trim());
   const folder = activeFolder();
 
   let filtered = ITEMS.filter(it => {
     const matchesFolder = folder === '__all__' || it.folder === folder;
     if(!matchesFolder) return false;
     if(!q) return true;
-    // AND logic: every term must appear in the title/path OR in the PDF content
-    const t = normText(it.title) + ' ' + normText(it.path);
-    const c = (CONTENT_INDEX && CONTENT_INDEX[it.path]) ? CONTENT_INDEX[it.path] : '';
-    let allInTitle = true;
-    for(const term of terms){
-      const inTitle = t.includes(term);
-      if(!inTitle) allInTitle = false;
-      if(!inTitle && !c.includes(term)) return false;
-    }
-    it._contentOnlyMatch = !allInTitle; // used by renderGrid for the badge
-    return true;
+    const titleHit = normText(it.title).includes(q) || normText(it.path).includes(q);
+    const contentHit = !!(CONTENT_INDEX && CONTENT_INDEX[it.path] && CONTENT_INDEX[it.path].includes(q));
+    it._contentOnlyMatch = !titleHit && contentHit; // used by renderGrid for the badge
+    return titleHit || contentHit;
   });
 
   const resultsEl = document.getElementById('results');
