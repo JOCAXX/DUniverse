@@ -1,9 +1,12 @@
 1. index_fixed.html (v1.5) — as duas mudanças de UI:
 
 A barra de busca agora fica dentro do hero, logo abaixo do botão "Read the main article" e acima dos contadores de documentos — visível sem rolar a tela.
+
 Rótulo "Search:" em âmbar antes do campo (no celular ele fica acima do campo para não apertar).
+
 A barra fixa no topo agora contém só as abas (All, Full Archive, etc.).
 Versão v1.5 no badge e no rodapé.
+
 
 Para publicar: renomeie para index.html e substitua em site/.
 2. build_index.py — sua rotina de indexação independente. Coloque na raiz do repositório (ao lado de Articles.pdf). Uso:
@@ -17,8 +20,8 @@ Sobre o "botão escondido": não daria para fazer no próprio site, porque o GitHub
 
 
 
-counciousness     
-
+     
+consciousness
 ==========
 COMO INSTALAR O SITE NO SEU REPOSITÓRIO (GitHub Desktop)
 ==========================================================
