@@ -40,7 +40,6 @@ ITEMS_JSON = SITE_DIR / "items.json"
 # folder -> label shown on the site ("" = repository root)
 FOLDERS = {
     "": "Main Article",
-	"PORT": "Portugues",
     "Todos": "Full Archive",
     "Novos": "Recent Articles",
     "Shorts": "Short Texts & AI Reviews",
