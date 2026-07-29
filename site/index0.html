@@ -162,32 +162,6 @@
     flex-shrink:0;
   }
 
-  .cta-row{
-    position:relative; z-index:2;
-    display:flex; align-items:center; justify-content:center;
-    flex-wrap:wrap; gap:0.6rem;
-    margin-top: 2rem;
-  }
-  .cta-row .featured-cta{ margin-top:0; }
-  .featured-cta-secondary{
-    display:inline-flex; align-items:center;
-    padding: 0.5rem 1.1rem;
-    border-radius: 999px;
-    border: 1px solid var(--amber-dim);
-    background: linear-gradient(100deg, rgba(232,163,61,0.14), rgba(108,142,235,0.08));
-    color: var(--text);
-    text-decoration:none;
-    font-family:'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.02em;
-    transition: border-color 0.18s, background 0.18s, transform 0.18s;
-  }
-  .featured-cta-secondary:hover{
-    border-color: var(--amber);
-    background: linear-gradient(100deg, rgba(232,163,61,0.24), rgba(108,142,235,0.14));
-    transform: translateY(-1px);
-  }
-
   .hero-meta{
     position:relative; z-index:2;
     display:flex; gap:2.2rem; flex-wrap:wrap; justify-content:center;
@@ -444,12 +418,9 @@
   <p class="eyebrow">Decreasing Universe Theory</p>
   <h1>The gravitational field contracts<br><em>Everything, slowly and continuously.</em></h1>
   <p class="hero-sub">A collection of articles, abstracts, and writings by Jocax on the Decreasing Universe Theory (D.U.T.), the Jocaxian Nothingness, and related topics in cosmology and philosophy.</p>
-  <div class="cta-row">
-    <a class="featured-cta" href="../Articles.pdf" target="_blank" rel="noopener">
-      <span class="featured-dot"></span> Read the main article — Articles.pdf
-    </a>
-    <a class="featured-cta-secondary" href="../Articles.htm" target="_blank" rel="noopener">Articles.htm</a>
-  </div>
+  <a class="featured-cta" href="../Articles.pdf" target="_blank" rel="noopener">
+    <span class="featured-dot"></span> Read the main article — Articles.pdf
+  </a>
   <div class="hero-search">
     <span class="search-label">Search:</span>
     <div class="search-box">
