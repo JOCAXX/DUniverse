@@ -4,21 +4,23 @@
 build_index.py — DUniverse site indexer
 ========================================
 Regenerates site/search-index.json AND the ITEMS list inside site/index.html,
-scanning the repository folders for PDFs. Run it whenever you add, remove or
-replace PDFs — no AI assistance needed.
+scanning the repository folders for PDFs (and, in the Html/ folder, .htm/.html
+files too). Run it whenever you add, remove or replace documents — no AI
+assistance needed.
 
 USAGE (from the repository root, where Articles.pdf lives):
 
     pip install pypdf          (only once)
-    python build_index.py              -> incremental: only new/changed PDFs are extracted
+    python build_index.py              -> incremental: only new/changed files are extracted
     python build_index.py --force      -> re-extract everything from scratch
 
-Then commit & push:  site/search-index.json  and  site/index.html
+Then commit & push:  site/search-index.json, site/items.json and site/index.html
 """
 
 import json
 import re
 import sys
+import html as html_lib
 import argparse
 from pathlib import Path
 
@@ -35,16 +37,22 @@ REPO_ROOT = Path(__file__).resolve().parent
 SITE_DIR = REPO_ROOT / "site"
 INDEX_JSON = SITE_DIR / "search-index.json"
 INDEX_HTML = SITE_DIR / "index.html"
+ITEMS_JSON = SITE_DIR / "items.json"
 
 # folder -> label shown on the site ("" = repository root)
 FOLDERS = {
     "": "Main Article",
+	"PORT": "Portugues",
+	"Html": "HTML Files",
     "Todos": "Full Archive",
     "Novos": "Recent Articles",
     "Shorts": "Short Texts & AI Reviews",
     "Abstract": "Abstracts",
     "Entrevistas": "Interviews",
 }
+
+# folders that should also be scanned for .htm/.html files (in addition to PDFs)
+HTML_FOLDERS = {"Html"}
 
 # files at repo root that should appear as featured
 FEATURED = {"Articles.pdf"}
@@ -71,7 +79,7 @@ def title_from_filename(stem: str) -> str:
     return " ".join(words)
 
 
-def extract_text(pdf_path: Path) -> str:
+def extract_text_pdf(pdf_path: Path) -> str:
     """Extract and normalize the full text of a PDF."""
     reader = PdfReader(str(pdf_path))
     parts = []
@@ -85,15 +93,50 @@ def extract_text(pdf_path: Path) -> str:
     return text
 
 
-def scan_pdfs():
-    """Yield (rel_path_posix, Path, folder, label) for every PDF in FOLDERS."""
+def extract_text_html(html_path: Path) -> str:
+    """Extract and normalize the visible text of an .htm/.html file."""
+    raw = html_path.read_bytes()
+    try:
+        raw_text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        raw_text = raw.decode("cp1252", errors="replace")
+
+    # keep only the <body>...</body> content when present, to skip <head>,
+    # <title>, <style> and Word's hidden <xml> document-properties block
+    body_m = re.search(r"(?is)<body\b[^>]*>(.*)</body>", raw_text)
+    if body_m:
+        raw_text = body_m.group(1)
+
+    # drop script/style/xml blocks entirely (belt & suspenders)
+    raw_text = re.sub(r"(?is)<(script|style|xml)\b.*?</\1>", " ", raw_text)
+    # strip HTML comments (Word wraps a lot of cruft in <!--[if ...]> blocks)
+    raw_text = re.sub(r"(?s)<!--.*?-->", " ", raw_text)
+    # strip all remaining tags
+    raw_text = re.sub(r"(?s)<[^>]+>", " ", raw_text)
+    # unescape entities (&aacute; &amp; etc.)
+    raw_text = html_lib.unescape(raw_text)
+    # collapse whitespace
+    raw_text = re.sub(r"\s+", " ", raw_text).strip()
+    return raw_text
+
+
+def scan_documents():
+    """Yield (rel_path_posix, Path, folder, label, kind) for every document in FOLDERS.
+
+    kind is 'pdf' or 'html'.
+    """
     for folder, label in FOLDERS.items():
         base = REPO_ROOT / folder if folder else REPO_ROOT
         if not base.is_dir():
             continue
         for pdf in sorted(base.glob("*.pdf"), key=lambda p: p.name.lower()):
             rel = f"{folder}/{pdf.name}" if folder else pdf.name
-            yield rel, pdf, folder, label
+            yield rel, pdf, folder, label, "pdf"
+        if folder in HTML_FOLDERS:
+            htm_files = list(base.glob("*.htm")) + list(base.glob("*.html"))
+            for htm in sorted(htm_files, key=lambda p: p.name.lower()):
+                rel = f"{folder}/{htm.name}" if folder else htm.name
+                yield rel, htm, folder, label, "html"
 
 
 # ---------------------------------------------------------------- main ------
@@ -101,7 +144,7 @@ def scan_pdfs():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--force", action="store_true",
-                    help="re-extract text of ALL PDFs (default: only new ones)")
+                    help="re-extract text of ALL documents (default: only new ones)")
     args = ap.parse_args()
 
     if not INDEX_HTML.is_file():
@@ -116,8 +159,8 @@ def main():
         except Exception:
             print("WARNING: could not read existing search-index.json; rebuilding all.")
 
-    html = INDEX_HTML.read_text(encoding="utf-8")
-    m = re.search(r"const ITEMS = (\[.*?\]);", html, flags=re.DOTALL)
+    html_src = INDEX_HTML.read_text(encoding="utf-8")
+    m = re.search(r"const ITEMS = (\[.*?\]);", html_src, flags=re.DOTALL)
     if not m:
         print("ERROR: could not find 'const ITEMS = [...];' inside site/index.html")
         sys.exit(1)
@@ -128,17 +171,18 @@ def main():
     new_items = []
     added, kept, failed = [], [], []
 
-    for rel, pdf, folder, label in scan_pdfs():
+    for rel, doc, folder, label, kind in scan_documents():
         # ITEMS entry (preserve custom title if it already existed)
         prev = old_items.get(rel)
-        title = prev["title"] if prev else title_from_filename(pdf.stem)
+        title = prev["title"] if prev else title_from_filename(doc.stem)
         new_items.append({
             "path": rel,
             "folder": folder,
             "folder_label": label,
             "title": title,
-            "size": human_size(pdf.stat().st_size),
+            "size": human_size(doc.stat().st_size),
             "featured": rel in FEATURED,
+            "type": kind,
         })
 
         # text index (incremental unless --force)
@@ -148,9 +192,12 @@ def main():
         else:
             print(f"  extracting: {rel} ...")
             try:
-                text = extract_text(pdf)
+                if kind == "pdf":
+                    text = extract_text_pdf(doc)
+                else:
+                    text = extract_text_html(doc)
                 if not text:
-                    print(f"    WARNING: no text extracted (scanned image PDF?): {rel}")
+                    print(f"    WARNING: no text extracted: {rel}")
                 new_index[rel] = text
                 added.append(rel)
             except Exception as e:
@@ -166,16 +213,22 @@ def main():
         encoding="utf-8",
     )
 
+    # ---- write items.json (used by search.html)
+    ITEMS_JSON.write_text(
+        json.dumps(new_items, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
     # ---- rewrite ITEMS inside index.html
     items_js = json.dumps(new_items, ensure_ascii=False)
-    html = html[:m.start(1)] + items_js + html[m.end(1):]
-    INDEX_HTML.write_text(html, encoding="utf-8")
+    html_src = html_src[:m.start(1)] + items_js + html_src[m.end(1):]
+    INDEX_HTML.write_text(html_src, encoding="utf-8")
 
     # ---- summary
     print()
     print("=" * 60)
     print(f"Documents listed .......... {len(new_items)}")
-    print(f"New PDFs indexed .......... {len(added)}")
+    print(f"New documents indexed ..... {len(added)}")
     for p in added:
         print(f"    + {p}")
     if removed:
@@ -188,7 +241,7 @@ def main():
             print(f"    ! {p}")
     print(f"Reused from old index ..... {len(kept)}")
     print("=" * 60)
-    print("Updated: site/search-index.json  and  site/index.html")
+    print("Updated: site/search-index.json, site/items.json and site/index.html")
     print("Now commit & push these two files.")
 
 
