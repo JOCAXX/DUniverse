@@ -41,6 +41,7 @@ ITEMS_JSON = SITE_DIR / "items.json"
 FOLDERS = {
     "": "Main Article",
 	"PORT": "Portugues",
+	"Html": "HTML Files",
     "Todos": "Full Archive",
     "Novos": "Recent Articles",
     "Shorts": "Short Texts & AI Reviews",
